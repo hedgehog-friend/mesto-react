@@ -22,6 +22,8 @@ function App() {
     userId: "",
   });
 
+  const [cards, setCards] = useState([]);
+
   useEffect(() => {
     // const item = {
     //   name: "Cow",
@@ -33,9 +35,8 @@ function App() {
     // api.createCard(item);
     // api.createCard(item);
 
-    api
-      .getUserData()
-      .then((userData) => {
+    Promise.all([api.getUserData(), api.getInitialCards()])
+      .then(([userData, initialCards]) => {
         //применяем данные пользователя
         setCurrentUser({
           userName: userData.name,
@@ -43,6 +44,7 @@ function App() {
           userAvatar: userData.avatar,
           userId: userData._id,
         });
+        setCards(initialCards);
       })
       .catch((err) => {
         console.log(err);
@@ -102,6 +104,22 @@ function App() {
       });
   }
 
+  function handleCardLike(card) {
+    // Снова проверяем, есть ли уже лайк на этой карточке
+    const isLiked = card.likes.some((i) => i._id === currentUser.userId);
+
+    // Отправляем запрос в API и получаем обновлённые данные карточки
+    api.changeLikeCardStatus(card._id, !isLiked).then((newCard) => {
+      setCards((cards) => cards.map((c) => (c._id === card._id ? newCard : c)));
+    });
+  }
+
+  function handleCardDelete(card) {
+    api.deleteCard(card._id).then(() => {
+      setCards((cards) => cards.filter((c) => c._id !== card._id));
+    });
+  }
+
   function closeAllPopups() {
     setIsEditAvatarPopupOpen(false);
     setIsAddPlacePopupOpen(false);
@@ -120,6 +138,9 @@ function App() {
           onEditAvatar={handleEditAvatarClick}
           onCardClick={handleCardClick}
           card={selectedCard}
+          cards={cards}
+          onCardLike={handleCardLike}
+          onCardDelete={handleCardDelete}
         />
 
         <Footer />

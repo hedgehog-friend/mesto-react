@@ -1,54 +1,11 @@
-import { useEffect, useState, useContext } from "react";
+import { useContext } from "react";
 import pencil from "../../images/symbols_logo/pencil.svg";
 import symbolAdd from "../../images/symbols_logo/symbolAdd.svg";
-import api from "../../utils/Api.js";
 import Card from "../Card/Card.js";
 import { CurrentUserContext } from "../../contexts/CurrentUserContext.js";
 
 function Main(props) {
   const currentUser = useContext(CurrentUserContext);
-  // const [userInfo, setUserInfo] = useState({
-  //   userName: "",
-  //   userDescription: "",
-  //   userAvatar: "",
-  // });
-  const [cards, setCards] = useState([]);
-  useEffect(() => {
-    //подгружаем данные пользователя с сервера
-
-    // api.getUserData(),
-    api
-      .getInitialCards()
-      .then((initialCards) => {
-        //применяем данные пользователя
-        // setUserInfo({
-        //   userName: userData.name,
-        //   userDescription: userData.about,
-        //   userAvatar: userData.avatar,
-        // });
-        setCards(initialCards);
-      })
-
-      .catch((err) => {
-        console.log(err);
-      });
-  }, []);
-
-  function handleCardLike(card) {
-    // Снова проверяем, есть ли уже лайк на этой карточке
-    const isLiked = card.likes.some((i) => i._id === currentUser.userId);
-
-    // Отправляем запрос в API и получаем обновлённые данные карточки
-    api.changeLikeCardStatus(card._id, !isLiked).then((newCard) => {
-      setCards((cards) => cards.map((c) => (c._id === card._id ? newCard : c)));
-    });
-  }
-
-  function handleCardDelete(card) {
-    api.deleteCard(card._id).then(() => {
-      setCards((cards) => cards.filter((c) => c._id !== card._id));
-    });
-  }
 
   return (
     <main className="main">
@@ -99,14 +56,14 @@ function Main(props) {
 
       <section>
         <ul className="places body__container">
-          {cards.map(function (item) {
+          {props.cards.map(function (item) {
             return (
               <Card
                 card={item}
                 key={item._id}
                 onCardClick={props.onCardClick}
-                onCardLike={handleCardLike}
-                onCardDelete={handleCardDelete}
+                onCardLike={props.onCardLike}
+                onCardDelete={props.onCardDelete}
               />
             );
           })}
