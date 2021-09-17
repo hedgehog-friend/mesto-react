@@ -7,6 +7,7 @@ import PopupWithForm from "../PopupWithForm/PopupWithForm.js";
 import api from "../../utils/Api.js";
 import { CurrentUserContext } from "../../contexts/CurrentUserContext.js";
 import EditProfilePopup from "../EditProfilePopup/EditProfilePopup.js";
+import EditAvatarPopup from "../EditAvatarPopup/EditAvatarPopup.js";
 
 function App() {
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false);
@@ -84,6 +85,23 @@ function App() {
       });
   }
 
+  function handleUpdateavatar(userData) {
+    api
+      .updateAvatar(userData)
+      .then((userData) => {
+        setCurrentUser({
+          userName: userData.name,
+          userDescription: userData.about,
+          userAvatar: userData.avatar,
+          userId: userData._id,
+        });
+        closeAllPopups();
+      })
+      .catch((err) => {
+        console.log(err); // выведем ошибку в консоль
+      });
+  }
+
   function closeAllPopups() {
     setIsEditAvatarPopupOpen(false);
     setIsAddPlacePopupOpen(false);
@@ -149,7 +167,12 @@ function App() {
         </PopupWithForm> */}
 
         {/* <!-- Модальное окно для изменения аватара --> */}
-        <PopupWithForm
+        <EditAvatarPopup
+          isOpen={isEditAvatarPopupOpen}
+          onClose={closeAllPopups}
+          onUpdateAvatar={handleUpdateavatar}
+        />
+        {/* <PopupWithForm
           name="avatar"
           title="Редактировать профиль"
           buttonName="Сохранить"
@@ -167,7 +190,7 @@ function App() {
             />
             <span className="popup__input-error" id="avatar-link-error"></span>
           </fieldset>
-        </PopupWithForm>
+        </PopupWithForm> */}
 
         {/* <!-- Модальное окно для добавления места --> */}
         <PopupWithForm
