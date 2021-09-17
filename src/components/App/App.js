@@ -8,6 +8,7 @@ import api from "../../utils/Api.js";
 import { CurrentUserContext } from "../../contexts/CurrentUserContext.js";
 import EditProfilePopup from "../EditProfilePopup/EditProfilePopup.js";
 import EditAvatarPopup from "../EditAvatarPopup/EditAvatarPopup.js";
+import AddPlacePopup from "../AddPlacePopup/AddPlacePopup.js";
 
 function App() {
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false);
@@ -97,6 +98,18 @@ function App() {
           userAvatar: userData.avatar,
           userId: userData._id,
         });
+        closeAllPopups();
+      })
+      .catch((err) => {
+        console.log(err); // выведем ошибку в консоль
+      });
+  }
+
+  function handleAddPlace(placeData) {
+    api
+      .createCard(placeData)
+      .then((newCard) => {
+        setCards([newCard, ...cards]);
         closeAllPopups();
       })
       .catch((err) => {
@@ -214,7 +227,12 @@ function App() {
         </PopupWithForm> */}
 
         {/* <!-- Модальное окно для добавления места --> */}
-        <PopupWithForm
+        <AddPlacePopup
+          isOpen={isAddPlacePopupOpen}
+          onClose={closeAllPopups}
+          onAddPlace={handleAddPlace}
+        />
+        {/* <PopupWithForm
           name="place"
           title="Новое место"
           buttonName="Сохранить"
@@ -243,7 +261,7 @@ function App() {
             />
             <span className="popup__input-error" id="link-error"></span>
           </fieldset>
-        </PopupWithForm>
+        </PopupWithForm> */}
 
         {/* <!-- Модальное окно для просмотра изображения --> */}
         <ImagePopup
