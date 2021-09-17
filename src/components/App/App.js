@@ -6,6 +6,7 @@ import ImagePopup from "../ImagePopup/ImagePopup.js";
 import PopupWithForm from "../PopupWithForm/PopupWithForm.js";
 import api from "../../utils/Api.js";
 import { CurrentUserContext } from "../../contexts/CurrentUserContext.js";
+import EditProfilePopup from "../EditProfilePopup/EditProfilePopup.js";
 
 function App() {
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false);
@@ -21,6 +22,16 @@ function App() {
   });
 
   useEffect(() => {
+    // const item = {
+    //   name: "Cow",
+    //   link: "https://pictures.s3.yandex.net/frontend-developer/cards-compressed/chelyabinsk-oblast.jpg",
+    // };
+
+    // api.createCard(item);
+    // api.createCard(item);
+    // api.createCard(item);
+    // api.createCard(item);
+
     api
       .getUserData()
       .then((userData) => {
@@ -51,6 +62,28 @@ function App() {
     setIsImagePopupOpen(true);
   }
 
+  function handleUpdateUser(userData) {
+    api
+      .updateUser(userData)
+      .then((userData) => {
+        setCurrentUser({
+          userName: userData.name,
+          userDescription: userData.about,
+          userAvatar: userData.avatar,
+          userId: userData._id,
+        });
+
+        closeAllPopups();
+        // userInfo.setUserInfo({
+        //   newNameValue: user.name,
+        //   newDescriptionValue: user.about,
+        // });
+      })
+      .catch((err) => {
+        console.log(err); // выведем ошибку в консоль
+      });
+  }
+
   function closeAllPopups() {
     setIsEditAvatarPopupOpen(false);
     setIsAddPlacePopupOpen(false);
@@ -74,7 +107,12 @@ function App() {
         <Footer />
 
         {/* <!-- Модальное окно для редактирования профиля --> */}
-        <PopupWithForm
+        <EditProfilePopup
+          isOpen={isEditProfilePopupOpen}
+          onClose={closeAllPopups}
+          onUpdateUser={handleUpdateUser}
+        />
+        {/* <PopupWithForm
           name="profile"
           title="Редактировать профиль"
           buttonName="Сохранить"
@@ -108,7 +146,7 @@ function App() {
               id="description-profile-error"
             ></span>
           </fieldset>
-        </PopupWithForm>
+        </PopupWithForm> */}
 
         {/* <!-- Модальное окно для изменения аватара --> */}
         <PopupWithForm
