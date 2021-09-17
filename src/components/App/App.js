@@ -17,28 +17,31 @@ function App() {
     userName: "",
     userDescription: "",
     userAvatar: "",
+    userId: "",
   });
 
   useEffect(() => {
-    Promise.all([
-      api.getUserData(),
-      // api.getInitialCards()
-    ])
-      .then(
-        ([
-          userData,
-          // initialCards
-        ]) => {
-          //применяем данные пользователя
-          setCurrentUser({
-            userName: userData.name,
-            userDescription: userData.about,
-            userAvatar: userData.avatar,
-          });
-          // setCards(initialCards);
-        }
-      )
+    let appi = api;
+    if (appi) {
+      console.log("hello");
+    } else {
+      console.log("not found");
+    }
 
+    let getData = api.getUserData;
+    let t = typeof api;
+    let data = getData();
+    api
+      .getUserData()
+      .then((userData) => {
+        //применяем данные пользователя
+        setCurrentUser({
+          userName: userData.name,
+          userDescription: userData.about,
+          userAvatar: userData.avatar,
+          userId: userData._id,
+        });
+      })
       .catch((err) => {
         console.log(err);
       });

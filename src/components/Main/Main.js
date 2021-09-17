@@ -6,7 +6,7 @@ import Card from "../Card/Card.js";
 import { CurrentUserContext } from "../../contexts/CurrentUserContext.js";
 
 function Main(props) {
-  const userInfo = useContext(CurrentUserContext);
+  const currentUser = useContext(CurrentUserContext);
   // const [userInfo, setUserInfo] = useState({
   //   userName: "",
   //   userDescription: "",
@@ -15,29 +15,45 @@ function Main(props) {
   const [cards, setCards] = useState([]);
   useEffect(() => {
     //подгружаем данные пользователя с сервера
-    Promise.all([
-      // api.getUserData(),
-      api.getInitialCards(),
-    ])
-      .then(
-        ([
-          // userData,
-          initialCards,
-        ]) => {
-          //применяем данные пользователя
-          // setUserInfo({
-          //   userName: userData.name,
-          //   userDescription: userData.about,
-          //   userAvatar: userData.avatar,
-          // });
-          setCards(initialCards);
-        }
-      )
+
+    // api.getUserData(),
+    api
+      .getInitialCards()
+      .then((initialCards) => {
+        //применяем данные пользователя
+        // setUserInfo({
+        //   userName: userData.name,
+        //   userDescription: userData.about,
+        //   userAvatar: userData.avatar,
+        // });
+        setCards(initialCards);
+      })
 
       .catch((err) => {
         console.log(err);
       });
   }, []);
+
+  function handleCardLike(card) {
+    // Снова проверяем, есть ли уже лайк на этой карточке
+    const isLiked = props.card.likes.some((i) => i._id === currentUser._id);
+
+    // Отправляем запрос в API и получаем обновлённые данные карточки
+    api.changeLikeCardStatus(card._id, !isLiked).then((newCard) => {
+      setCards((cards) => cards.map((c) => (c._id === card._id ? newCard : c)));
+    });
+  }
+
+  function handleCardDelete(card) {
+    // Снова проверяем, есть ли уже лайк на этой карточке
+    const isLiked = card.likes.some((i) => i._id === currentUser._id);
+
+    // Отправляем запрос в API и получаем обновлённые данные карточки
+    api.changeLikeCardStatus(card._id, !isLiked).then((newCard) => {
+      setCards((state) => state.map((c) => (c._id === card._id ? newCard : c)));
+    });
+  }
+
   return (
     <main className="main">
       <section className="profile body__container">
@@ -45,7 +61,7 @@ function Main(props) {
           <div className="profile__avatar">
             <img
               className="profile__image"
-              src={userInfo.userAvatar}
+              src={currentUser.userAvatar}
               alt="аватар профиля"
             />
             <div className="profile__image-hover" onClick={props.onEditAvatar}>
@@ -58,7 +74,7 @@ function Main(props) {
           </div>
           <div className="profile__info">
             <div className="profile__info-upper">
-              <h1 className="profile__name">{userInfo.userName}</h1>
+              <h1 className="profile__name">{currentUser.userName}</h1>
               <button
                 className="profile__edit"
                 aria-label="редактировать"
@@ -66,7 +82,9 @@ function Main(props) {
                 onClick={props.onEditProfile}
               ></button>
             </div>
-            <p className="profile__description">{userInfo.userDescription}</p>
+            <p className="profile__description">
+              {currentUser.userDescription}
+            </p>
           </div>
         </div>
         <button
@@ -91,6 +109,7 @@ function Main(props) {
                 card={item}
                 key={item._id}
                 onCardClick={props.onCardClick}
+                onCardLike={handleCardLike}
               />
             );
           })}

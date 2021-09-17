@@ -24,6 +24,7 @@ class Api {
 
   //получение данных пользователя
   getUserData() {
+    let t = this;
     const url = `${this.#baseUrl}/users/me`;
     return fetch(url, {
       headers: this.#headers,
@@ -80,6 +81,10 @@ class Api {
       method: "DELETE",
       headers: this.#headers,
     }).then(handleResponse);
+  }
+
+  changeLikeCardStatus(cardId, isLiked) {
+    return isLiked ? this.addLike(cardId) : this.removeLike(cardId);
   }
 }
 
