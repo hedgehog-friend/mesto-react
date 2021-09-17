@@ -20,6 +20,9 @@ function Card(props) {
   function handleLikeClick() {
     props.onCardLike(props.card);
   }
+  function handleCardDelete() {
+    props.onCardDelete(props.card);
+  }
 
   return (
     <li className="place">
@@ -33,6 +36,7 @@ function Card(props) {
         className={cardDeleteButtonClassName}
         aria-label="удалить"
         type="button"
+        onClick={handleCardDelete}
       ></button>
       <div className="place__info">
         <h2 className="place__name">{props.card.name}</h2>
