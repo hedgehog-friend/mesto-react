@@ -26,19 +26,8 @@ function App() {
   const [cards, setCards] = useState([]);
 
   useEffect(() => {
-    // const item = {
-    //   name: "Cow",
-    //   link: "https://pictures.s3.yandex.net/frontend-developer/cards-compressed/chelyabinsk-oblast.jpg",
-    // };
-
-    // api.createCard(item);
-    // api.createCard(item);
-    // api.createCard(item);
-    // api.createCard(item);
-
     Promise.all([api.getUserData(), api.getInitialCards()])
       .then(([userData, initialCards]) => {
-        //применяем данные пользователя
         setCurrentUser({
           userName: userData.name,
           userDescription: userData.about,
@@ -78,13 +67,9 @@ function App() {
         });
 
         closeAllPopups();
-        // userInfo.setUserInfo({
-        //   newNameValue: user.name,
-        //   newDescriptionValue: user.about,
-        // });
       })
       .catch((err) => {
-        console.log(err); // выведем ошибку в консоль
+        console.log(err);
       });
   }
 
@@ -101,7 +86,7 @@ function App() {
         closeAllPopups();
       })
       .catch((err) => {
-        console.log(err); // выведем ошибку в консоль
+        console.log(err);
       });
   }
 
@@ -113,7 +98,7 @@ function App() {
         closeAllPopups();
       })
       .catch((err) => {
-        console.log(err); // выведем ошибку в консоль
+        console.log(err);
       });
   }
 
@@ -164,41 +149,6 @@ function App() {
           onClose={closeAllPopups}
           onUpdateUser={handleUpdateUser}
         />
-        {/* <PopupWithForm
-          name="profile"
-          title="Редактировать профиль"
-          buttonName="Сохранить"
-          isOpen={isEditProfilePopupOpen}
-          onClose={closeAllPopups}
-        >
-          <fieldset className="popup__input-container">
-            <input
-              type="text"
-              id="name-profile"
-              name="name-profile"
-              className="popup__form-item popup__form-item_el_name"
-              placeholder="Имя"
-              required
-              minLength="2"
-              maxLength="40"
-            />
-            <span className="popup__input-error" id="name-profile-error"></span>
-            <input
-              type="text"
-              id="description-profile"
-              name="description-profile"
-              className="popup__form-item popup__form-item_el_description"
-              placeholder="Комментарий"
-              minLength="2"
-              maxLength="200"
-              required
-            />
-            <span
-              className="popup__input-error"
-              id="description-profile-error"
-            ></span>
-          </fieldset>
-        </PopupWithForm> */}
 
         {/* <!-- Модальное окно для изменения аватара --> */}
         <EditAvatarPopup
@@ -206,25 +156,6 @@ function App() {
           onClose={closeAllPopups}
           onUpdateAvatar={handleUpdateavatar}
         />
-        {/* <PopupWithForm
-          name="avatar"
-          title="Редактировать профиль"
-          buttonName="Сохранить"
-          isOpen={isEditAvatarPopupOpen}
-          onClose={closeAllPopups}
-        >
-          <fieldset className="popup__input-container">
-            <input
-              type="url"
-              id="avatar-link"
-              name="link"
-              className="popup__form-item popup__form-item_el_description"
-              placeholder="Введите ссылку"
-              required
-            />
-            <span className="popup__input-error" id="avatar-link-error"></span>
-          </fieldset>
-        </PopupWithForm> */}
 
         {/* <!-- Модальное окно для добавления места --> */}
         <AddPlacePopup
@@ -232,36 +163,6 @@ function App() {
           onClose={closeAllPopups}
           onAddPlace={handleAddPlace}
         />
-        {/* <PopupWithForm
-          name="place"
-          title="Новое место"
-          buttonName="Сохранить"
-          isOpen={isAddPlacePopupOpen}
-          onClose={closeAllPopups}
-        >
-          <fieldset className="popup__input-container">
-            <input
-              type="text"
-              id="name-place"
-              name="name-place"
-              className="popup__form-item popup__form-item_el_name"
-              placeholder="Название"
-              minLength="2"
-              maxLength="30"
-              required
-            />
-            <span className="popup__input-error" id="name-place-error"></span>
-            <input
-              type="url"
-              id="link"
-              name="link"
-              className="popup__form-item popup__form-item_el_description"
-              placeholder="Ссылка на картинку"
-              required
-            />
-            <span className="popup__input-error" id="link-error"></span>
-          </fieldset>
-        </PopupWithForm> */}
 
         {/* <!-- Модальное окно для просмотра изображения --> */}
         <ImagePopup
