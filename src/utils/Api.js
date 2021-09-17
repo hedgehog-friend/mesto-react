@@ -24,7 +24,6 @@ class Api {
 
   //получение данных пользователя
   getUserData() {
-    let t = this;
     const url = `${this.#baseUrl}/users/me`;
     return fetch(url, {
       headers: this.#headers,

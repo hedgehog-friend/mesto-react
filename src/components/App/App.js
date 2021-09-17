@@ -21,16 +21,6 @@ function App() {
   });
 
   useEffect(() => {
-    let appi = api;
-    if (appi) {
-      console.log("hello");
-    } else {
-      console.log("not found");
-    }
-
-    let getData = api.getUserData;
-    let t = typeof api;
-    let data = getData();
     api
       .getUserData()
       .then((userData) => {
