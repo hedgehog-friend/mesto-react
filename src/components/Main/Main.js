@@ -1,28 +1,38 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import pencil from "../../images/symbols_logo/pencil.svg";
 import symbolAdd from "../../images/symbols_logo/symbolAdd.svg";
 import api from "../../utils/Api.js";
 import Card from "../Card/Card.js";
+import { CurrentUserContext } from "../../contexts/CurrentUserContext.js";
 
 function Main(props) {
-  const [userInfo, setUserInfo] = useState({
-    userName: "",
-    userDescription: "",
-    userAvatar: "",
-  });
+  const userInfo = useContext(CurrentUserContext);
+  // const [userInfo, setUserInfo] = useState({
+  //   userName: "",
+  //   userDescription: "",
+  //   userAvatar: "",
+  // });
   const [cards, setCards] = useState([]);
   useEffect(() => {
     //подгружаем данные пользователя с сервера
-    Promise.all([api.getUserData(), api.getInitialCards()])
-      .then(([userData, initialCards]) => {
-        //применяем данные пользователя
-        setUserInfo({
-          userName: userData.name,
-          userDescription: userData.about,
-          userAvatar: userData.avatar,
-        });
-        setCards(initialCards);
-      })
+    Promise.all([
+      // api.getUserData(),
+      api.getInitialCards(),
+    ])
+      .then(
+        ([
+          // userData,
+          initialCards,
+        ]) => {
+          //применяем данные пользователя
+          // setUserInfo({
+          //   userName: userData.name,
+          //   userDescription: userData.about,
+          //   userAvatar: userData.avatar,
+          // });
+          setCards(initialCards);
+        }
+      )
 
       .catch((err) => {
         console.log(err);
