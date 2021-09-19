@@ -1,17 +1,33 @@
-import { useRef } from "react";
+import { useState } from "react";
 import PopupWithForm from "../PopupWithForm/PopupWithForm";
 
 function AddPlacePopup(props) {
-  const namePlaceRef = useRef();
-  const linkPlaceRef = useRef();
+  // const namePlaceRef = useRef();
+  // const linkPlaceRef = useRef();
+
+  const [name, setName] = useState();
+  const [link, setLink] = useState();
+
+  function handleChangeName(e) {
+    setName(e.target.value);
+  }
+
+  function handleChangeLink(e) {
+    setLink(e.target.value);
+  }
 
   function handleSubmit(e) {
     e.preventDefault();
 
-    props.onAddPlace({
-      link: linkPlaceRef.current.value,
-      name: namePlaceRef.current.value,
-    });
+    props
+      .onAddPlace({
+        link,
+        name,
+      })
+      .then(() => {
+        setName("");
+        setLink("");
+      });
   }
 
   return (
@@ -33,7 +49,8 @@ function AddPlacePopup(props) {
           minLength="2"
           maxLength="30"
           required
-          ref={namePlaceRef}
+          onChange={handleChangeName}
+          value={name}
         />
         <span className="popup__input-error" id="name-place-error"></span>
         <input
@@ -43,7 +60,8 @@ function AddPlacePopup(props) {
           className="popup__form-item popup__form-item_el_description"
           placeholder="Ссылка на картинку"
           required
-          ref={linkPlaceRef}
+          onChange={handleChangeLink}
+          value={link}
         />
         <span className="popup__input-error" id="link-error"></span>
       </fieldset>

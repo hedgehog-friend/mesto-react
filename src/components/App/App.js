@@ -74,7 +74,7 @@ function App() {
   }
 
   function handleUpdateavatar(userData) {
-    api
+    return api
       .updateAvatar(userData)
       .then((userData) => {
         setCurrentUser({
@@ -87,11 +87,12 @@ function App() {
       })
       .catch((err) => {
         console.log(err);
+        return Promise.reject(err);
       });
   }
 
   function handleAddPlace(placeData) {
-    api
+    return api
       .createCard(placeData)
       .then((newCard) => {
         setCards([newCard, ...cards]);
@@ -99,6 +100,7 @@ function App() {
       })
       .catch((err) => {
         console.log(err);
+        return Promise.reject(err);
       });
   }
 
@@ -107,15 +109,27 @@ function App() {
     const isLiked = card.likes.some((i) => i._id === currentUser.userId);
 
     // Отправляем запрос в API и получаем обновлённые данные карточки
-    api.changeLikeCardStatus(card._id, !isLiked).then((newCard) => {
-      setCards((cards) => cards.map((c) => (c._id === card._id ? newCard : c)));
-    });
+    api
+      .changeLikeCardStatus(card._id, !isLiked)
+      .then((newCard) => {
+        setCards((cards) =>
+          cards.map((c) => (c._id === card._id ? newCard : c))
+        );
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }
 
   function handleCardDelete(card) {
-    api.deleteCard(card._id).then(() => {
-      setCards((cards) => cards.filter((c) => c._id !== card._id));
-    });
+    api
+      .deleteCard(card._id)
+      .then(() => {
+        setCards((cards) => cards.filter((c) => c._id !== card._id));
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }
 
   function closeAllPopups() {
@@ -124,6 +138,17 @@ function App() {
     setIsEditProfilePopupOpen(false);
     setIsImagePopupOpen(false);
   }
+  useEffect(() => {
+    const closeByEscape = (e) => {
+      if (e.key === "Escape") {
+        closeAllPopups();
+      }
+    };
+
+    document.addEventListener("keydown", closeByEscape);
+
+    return () => document.removeEventListener("keydown", closeByEscape);
+  }, []);
 
   return (
     <CurrentUserContext.Provider value={currentUser}>
